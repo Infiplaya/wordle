@@ -9,6 +9,8 @@
         - if the character is on good place (it matches the correct word), the cell becomes green
         - if the character is on the correct word but in different place, the cell becomes yellow
         - if in correct word there is no guessed character, the cell remains dark gray
+        
+        - the problem I have is that 
 - User has 5 guesses
 - Keyboard:
     - there is possibility to use keyboard that looks like qwerty keyboard
@@ -21,12 +23,22 @@ let numberOfGuesses = 0;
 let selectedRow = 0;
 let selectedCell = 0;
 let count = 0;
-
-const words = ['apple', 'penis', 'eagle', 'eagel']
+let duplicateCounter = 0;
+const words = ['apple', 'penis', 'eagle', 'eagel', 'eeeee', 'aeege']
 
 let correctWord = 'eagle'
 
 const board = document.querySelector('.board');
+
+function countDuplicates(wordArr) {
+    let duplicates = {};
+    wordArr.forEach((element) => {
+        duplicates[element] = duplicates[element] + 1 || 1; 
+    })
+
+    return duplicates;
+}
+
 
 
 // Create 5x5 board
@@ -47,6 +59,8 @@ for (let i = 0; i < 5; i++){
 const keys = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'], ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], ['enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'back']]
 const keyboard = document.querySelector('.keyboard')
 
+
+
 for (let i = 0; i < 3; i++) {
     const keyboardRow = document.createElement('div');
     keyboardRow.className = "keyboardRow";
@@ -60,6 +74,60 @@ for (let i = 0; i < 3; i++) {
 
     keyboard.appendChild(keyboardRow);
 }
+
+// grab all buttons in a keyboard
+const keyboardKeys = document.querySelectorAll('.keyButton');
+
+// for each button add event listener, enable to type by keyboard
+keyboardKeys.forEach((key) => {
+    let newKey = key.innerText.toLowerCase();
+    key.addEventListener('click', () => {
+    let currentCell = findCurrentCell(selectedCell, selectedRow);
+    if (selectedCell <= 4 && (keys[0].includes(newKey) || keys[1].includes(newKey) || keys[2].includes(key)) && newKey != "enter" && key.innerText != "back") {
+        count = 0;
+        currentCell.innerText = newKey;
+        if (selectedCell < 4) {
+            selectedCell++;
+        };
+    }
+
+    if (newKey === 'back') {
+        currentCell.innerText = '';
+        if (count < 5) {    
+            count = count + 1;
+        }
+        if (count > 1) {
+            if (selectedCell > 0) {
+                selectedCell--;
+                currentCell = findCurrentCell(selectedCell, selectedRow);
+                currentCell.innerText = '';
+            }   
+        }
+    }
+
+
+    // check the word and go to the next if the word is inside the list of words
+    if (newKey === 'enter') {
+        let userArr = getUserWord();
+        // Check if the word is not too short
+        if (!userArr.includes('')) {
+            let userWord = userArr.join('').toLowerCase();
+            let message = validateWord(userWord);
+            if (message === 'valid') {
+                checkWord();
+                updateCurrentRow();
+            } else {
+                alert('Word not in dictionary')
+            }
+        }
+        else {
+            alert('Not enough words')
+        }
+
+        userWord = [];
+    }
+    })
+})
 
 
 function findCurrentCell(selectedCell, selectedRow) {
@@ -105,7 +173,7 @@ window.addEventListener('keydown', (e) => {
         }
     }
 
-    console.log("count", count)
+    console.log("count1", count)
 
     // check the word and go to the next if the word is inside the list of words
     if (e.key === 'Enter') {
@@ -115,6 +183,7 @@ window.addEventListener('keydown', (e) => {
             let userWord = userArr.join('').toLowerCase();
             let message = validateWord(userWord);
             if (message === 'valid') {
+                checkWord();
                 updateCurrentRow();
             } else {
                 alert('Word not in dictionary')
@@ -134,6 +203,7 @@ function updateCurrentRow() {
     numberOfGuesses++;
 }
 
+
 // check if the list of words includes inputted word
 function validateWord(word) {
     if (words.includes(word)) {
@@ -142,29 +212,73 @@ function validateWord(word) {
     return message = 'invalid';
 }
 
-
-
-function getUserWord() {
-    let userWord = [];
+function checkWord() {
+    let userArr = getUserWord();
     let correctArr = correctWord.split('')
     correctArr = correctArr.map((element) => element.toUpperCase());
     let children = findCurrentRow(selectedRow);
+
+    let correctDuplicates = countDuplicates(correctArr)
+    let userDuplicates = countDuplicates(userArr)
+
     for (let i = 0; i < children.length; i++) {
-        userWord.push(children[i].innerText)
         // check if user characters are inside the correct word array
-        if (correctArr.includes(children[i].innerText)) {
-            children[i].style.backgroundColor = '#BED453';
-            // check if the character in input is in correct place
-            if (userWord.indexOf(children[i].innerText) === correctArr.indexOf(children[i].innerText)) {
-                children[i].style.backgroundColor = '#27C43F';
+        if (correctArr.includes(userArr[i])) {
+            if (correctDuplicates[children[i].innerText] >= userDuplicates[children[i].innerText]) {
+                // turn background to yellow
+                children[i].style.backgroundColor = '#BED453';
+                // check if the character in input is in correct place
+                if (userArr[i] === correctArr[i]) {
+                    // turn background to green
+                    children[i].style.backgroundColor = '#27C43F';
+                }   
             }
         }
     }
-    if (userWord.join('').toLowerCase() === correctWord) {
+
+    // In this loop I check words that have more duplicates then the correct answer and if they overlapping char are in the same position
+    
+    for  (let i = 0; i < children.length; i++) {
+        if (correctArr.includes(userArr[i]) && correctDuplicates[children[i].innerText] < userDuplicates[children[i].innerText]) {
+            if (userArr[i] === correctArr[i]) {
+                // turn background to green
+                children[i].style.backgroundColor = '#27C43F';
+                console.log(children[i].style.backgroundColor === 'rgb(39, 196, 63)');
+                duplicateCounter++;
+            }
+        }
+    }
+
+    for  (let i = 0; i < children.length; i++) {
+        if (correctArr.includes(userArr[i]) && correctDuplicates[children[i].innerText] < userDuplicates[children[i].innerText]) {
+            if (userArr[i] !== correctArr[i] && duplicateCounter < correctDuplicates[children[i].innerText]) {
+                duplicateCounter++;
+                children[i].style.backgroundColor = '#BED453';
+            } 
+        }
+    }
+
+    
+
+
+    if (userArr.join('').toLowerCase() === correctWord) {
         alert("You won!")
     }
-    
-    return userWord;
+}
+
+
+
+function getUserWord() {
+    let userArr = [];
+    let correctArr = correctWord.split('')
+    correctArr = correctArr.map((element) => element.toUpperCase());
+    let children = findCurrentRow(selectedRow);
+
+    for (let i = 0; i < children.length; i++) {
+        userArr.push(children[i].innerText)
+    }
+
+    return userArr;
 }
 
 
