@@ -18,47 +18,32 @@
 */
 
 let numberOfGuesses = 0;
-let selectedRow;
-let selectedCell
+let selectedRow = 0;
+let selectedCell = 0;
+let count = 0;
+
+const words = ['apple', 'penis', 'eagle', 'eagel']
+
+let correctWord = 'eagle'
 
 const board = document.querySelector('.board');
 
 
+// Create 5x5 board
 for (let i = 0; i < 5; i++){
-    selectedRow = numberOfGuesses;
-    selectedCell = 0;
-
     const row = document.createElement('div');
-    row.className = `row ${i}`;
-    row.className.includes(selectedRow) ? row.id = "selected-row" : null;
+    row.className = 'row';
+    row.id = `${i}`;
     for (let j = 0; j < 5; j++) {
         const cell = document.createElement('div');
-        cell.className = `cell ${i}-${j}`
-        if (selectedCell === j) {
-            cell.id = "selected-cell"
-        }
+        cell.className = "cell"
+        cell.id = `${i}-${j}`
         row.appendChild(cell);
     }
     board.appendChild(row);
 }
 
-const currentRow = document.getElementById('selected-row')
-const currentCell = document.getElementById('selected-cell')
-
-
-
-window.addEventListener('keydown', (e) => {
-        currentCell.innerText = e.key
-        selectedCell = selectedCell + 1;
-        const nextCell = document.getElementsByClassName(`cell ${numberOfGuesses}-${selectedCell}`)
-        console.log(nextCell[0])
-        currentCell.id = ""
-        nextCell[0].id = "selected-cell"
-});
-
-
-
-
+// Make a keyboard on screen
 const keys = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'], ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], ['enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'back']]
 const keyboard = document.querySelector('.keyboard')
 
@@ -75,3 +60,112 @@ for (let i = 0; i < 3; i++) {
 
     keyboard.appendChild(keyboardRow);
 }
+
+
+function findCurrentCell(selectedCell, selectedRow) {
+    let currentCell = document.getElementById(`${selectedRow}-${selectedCell}`);
+    return currentCell;
+}
+
+
+function findCurrentRow(selectedRow) {
+    let currentRow = document.getElementById(`${selectedRow}`);
+    console.log(currentRow)
+    let children = currentRow.children;
+    return children
+}
+
+
+
+// allow user to input the char
+window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase()
+    console.log("selected-cell", selectedCell)
+    console.log("selected-row", selectedRow)
+    let currentCell = findCurrentCell(selectedCell, selectedRow);
+    if (selectedCell <= 4 && (keys[0].includes(key) || keys[1].includes(key) || keys[2].includes(key)) && e.key != "Enter" && e.key != "Backspace") {
+        count = 0;
+        currentCell.innerText = key;
+        if (selectedCell < 4) {
+            selectedCell++;
+        };
+    }
+
+    if (e.key === 'Backspace') {
+        currentCell.innerText = '';
+        if (count < 5) {    
+            count = count + 1;
+        }
+        if (count > 1) {
+            if (selectedCell > 0) {
+                selectedCell--;
+                currentCell = findCurrentCell(selectedCell, selectedRow);
+                currentCell.innerText = '';
+            }   
+        }
+    }
+
+    console.log("count", count)
+
+    // check the word and go to the next if the word is inside the list of words
+    if (e.key === 'Enter') {
+        let userArr = getUserWord();
+        // Check if the word is not too short
+        if (!userArr.includes('')) {
+            let userWord = userArr.join('').toLowerCase();
+            let message = validateWord(userWord);
+            if (message === 'valid') {
+                updateCurrentRow();
+            } else {
+                alert('Word not in dictionary')
+            }
+        }
+        else {
+            alert('Not enough words')
+        }
+
+        userWord = [];
+    }
+})
+
+function updateCurrentRow() {
+    selectedCell = 0;
+    selectedRow++;
+    numberOfGuesses++;
+}
+
+// check if the list of words includes inputted word
+function validateWord(word) {
+    if (words.includes(word)) {
+        return message = 'valid';
+    }
+    return message = 'invalid';
+}
+
+
+
+function getUserWord() {
+    let userWord = [];
+    let correctArr = correctWord.split('')
+    correctArr = correctArr.map((element) => element.toUpperCase());
+    let children = findCurrentRow(selectedRow);
+    for (let i = 0; i < children.length; i++) {
+        userWord.push(children[i].innerText)
+        // check if user characters are inside the correct word array
+        if (correctArr.includes(children[i].innerText)) {
+            children[i].style.backgroundColor = '#BED453';
+            // check if the character in input is in correct place
+            if (userWord.indexOf(children[i].innerText) === correctArr.indexOf(children[i].innerText)) {
+                children[i].style.backgroundColor = '#27C43F';
+            }
+        }
+    }
+    if (userWord.join('').toLowerCase() === correctWord) {
+        alert("You won!")
+    }
+    
+    return userWord;
+}
+
+
+
