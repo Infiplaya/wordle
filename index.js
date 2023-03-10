@@ -109,7 +109,6 @@ keyboardKeys.forEach((key) => {
     if (selectedCell <= 4 && (keys[0].includes(newKey) || keys[1].includes(newKey) || keys[2].includes(newKey)) && newKey != "enter" && newKey != "back") {
         count = 0;
         currentCell.innerText = newKey;
-        console.log(selectedCell)
         if (selectedCell < 4) {
             selectedCell++;
         };
@@ -141,6 +140,7 @@ keyboardKeys.forEach((key) => {
                 checkWord();
                 animateCells();
                 updateCurrentRow();
+                checkKeyboard();
             } else {
                 alert('Word not in dictionary')
             }
@@ -176,6 +176,7 @@ function animateCells() {
   }
 
 
+
 // allow user to input the char
 window.addEventListener('keydown', (e) => {
     const won = checkWin();
@@ -188,7 +189,6 @@ window.addEventListener('keydown', (e) => {
         if (selectedCell < 4) {
             selectedCell++;
             currentCell = findCurrentCell(selectedCell, selectedRow)
-            console.log(selectedCell)
         };
     }
 
@@ -216,6 +216,7 @@ window.addEventListener('keydown', (e) => {
                 checkWord();
                 animateCells();
                 updateCurrentRow();
+                checkKeyboard();
             } else {
                 alert('Word not in dictionary')
             }
@@ -271,7 +272,6 @@ function checkWord() {
                 }   
             }
         } else {
-            console.log('yoo')
             children[i].style.backgroundColor = '#444'
         }
     }
@@ -347,3 +347,30 @@ function resetGame() {
 let button = document.querySelector('.reset');
 
 button.addEventListener('click', resetGame)
+
+
+// for each key button on the keyboard,
+// I need to check if the key button text matches the char that is in the words that user Guessed
+
+
+function checkKeyboard() {
+    let cells = [];
+    let children = findCurrentRow(selectedRow);
+    if (selectedRow >= 1) {
+        children = findCurrentRow(selectedRow - 1);
+    }   
+
+    for (let child of children) {
+        cells.push(child);
+    }
+
+    for (let key of keyboardKeys) {
+        for (let cell of cells ) {
+            if (cell.innerText === key.innerText) {
+                key.style.backgroundColor = cell.style.backgroundColor;
+            }
+        }
+    }
+}
+
+checkKeyboard();
