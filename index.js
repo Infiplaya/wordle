@@ -37,6 +37,7 @@ const GREEN = '#538d4e'
 
 const GREY = '#444';
 
+const jsConfetti = new JSConfetti()
 
 let correctWord;
 
@@ -185,7 +186,7 @@ function animateCells() {
 
 // allow user to input the char
 window.addEventListener('keydown', (e) => {
-    const won = checkWin();
+    let won = checkWin();
     if (!won && numberOfGuesses <= 4) {
     const key = e.key.toLowerCase()
     let currentCell = findCurrentCell(selectedCell, selectedRow);
@@ -243,7 +244,7 @@ function updateCurrentRow() {
 
     const lose = checkLose()
     if (lose) {
-        alert('You lost sry');
+        alert(`You lost sry. The word was ${correctWord.toUpperCase()}`);
     }
 }
 
@@ -307,9 +308,10 @@ function checkWord() {
 
     // Check if user won the game
     if (userArr.join('').toLowerCase() === correctWord) {
-        alert("You won!")
         won = true;
+        jsConfetti.addConfetti()
     }
+
 }
 
 function checkWin() {
@@ -378,10 +380,15 @@ function checkKeyboard() {
                     key.style.backgroundColor = cell.style.backgroundColor;
                     console.log(key.style.backgroundColor)
                 }
-                
+
             }
         }
     }
 }
+
+function sleep (ms) {
+    const end = new Date().getTime() + ms;
+    while (new Date().getTime() < end) { /* do nothing */ }
+  }
 
 checkKeyboard();
