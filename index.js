@@ -19,14 +19,28 @@
     - you can also type words manually on your keyboard
 */
 
+
+
 let numberOfGuesses = 0;
 let selectedRow = 0;
 let selectedCell = 0;
 let count = 0;
 let duplicateCounter = 0;
-const words = ['apple', 'penis', 'eagle', 'eagel', 'eeeee', 'aeege']
 
-let correctWord = 'eagle'
+let words = ['which', 'there', 'their', 'about', 'would', 'these', 'other', 'words', 'could', 'write', 'first', 'water', 'after', 'where', 'right', 'think', 'three', 'years', 'place', 'sound', 'great', 'again', 'still', 'every', 'small', 'found', 'those', 'never', 'under', 'might', 'while', 'house', 'world', 'below', 'asked', 'going', 'large', 'until', 'along', 'shall', 'being', 'often', 'earth', 'began', 'since', 'study', 'night', 'light', 'above', 'paper', 'parts', 'young', 'story', 'point', 'times', 'heard', 'whole', 'white', 'given', 'means', 'music', 'miles', 'thing', 'today', 'later', 'using', 'money', 'lines', 'order', 'group', 'among', 'learn', 'known', 'space', 'table', 'early', 'trees', 'short', 'hands', 'state', 'black', 'shown', 'stood', 'front', 'voice', 'kinds', 'makes', 'comes', 'close', 'power', 'lived', 'vowel', 'taken', 'built', 'heart', 'ready', 'quite', 'class', 'bring', 'round', 'horse', 'shows', 'piece', 'green', 'stand', 'birds', 'start', 'river', 'tried', 'least', 'field', 'whose', 'girls', 'leave', 'added', 'color', 'third', 'hours', 'moved', 'plant', 'doing', 'names', 'forms', 'heavy', 'ideas', 'cried', 'check', 'floor', 'begin', 'woman', 'alone', 'plane', 'spell', 'watch', 'carry', 'wrote', 'clear', 'named', 'books', 'child', 'glass', 'human', 'takes', 'party', 'build', 'seems', 'blood', 'sides', 'seven', 'mouth', 'solve', 'north', 'value', 'death', 'maybe', 'happy', 'tells', 'gives', 'looks', 'shape', 'lives', 'steps', 'areas', 'sense', 'speak', 'force', 'ocean', 'speed', 'women', 'metal', 'south', 'grass', 'scale', 'cells', 'lower', 'sleep', 'wrong', 'pages', 'ships', 'needs', 'rocks', 'eight', 'major', 'level', 'total', 'ahead', 'reach', 'stars', 'store', 'sight', 'terms', 'catch', 'works', 'board', 'cover', 'songs', 'equal', 'stone', 'waves', 'guess', 'dance', 'spoke', 'break', 'cause', 'radio', 'weeks', 'lands', 'basic', 'liked', 'trade', 'fresh', 'final', 'fight', 'meant', 'drive', 'spent', 'local', 'waxes', 'knows', 'train', 'bread', 'homes', 'teeth', 'coast', 'thick', 'brown', 'clean', 'quiet', 'sugar', 'facts', 'steel', 'forth', 'rules', 'notes', 'units', 'peace', 'month', 'verbs', 'seeds', 'helps', 'sharp', 'visit', 'woods', 'chief', 'walls', 'cross', 'wings']
+let won = false;
+let lose = false;
+
+
+let correctWord;
+
+function getRandomWord() {
+    correctWord = words[Math.floor(Math.random() * words.length)];
+}
+
+getRandomWord();
+
+console.log(correctWord)
 
 const board = document.querySelector('.board');
 
@@ -39,41 +53,48 @@ function countDuplicates(wordArr) {
     return duplicates;
 }
 
-
-
 // Create 5x5 board
-for (let i = 0; i < 5; i++){
-    const row = document.createElement('div');
-    row.className = 'row';
-    row.id = `${i}`;
-    for (let j = 0; j < 5; j++) {
-        const cell = document.createElement('div');
-        cell.className = "cell"
-        cell.id = `${i}-${j}`
-        row.appendChild(cell);
+function buildBoard() {
+    board.innerHTML = '';
+    for (let i = 0; i < 5; i++){
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.id = `${i}`;
+        for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('div');
+            cell.className = "cell"
+            cell.innerText = ''
+            cell.id = `${i}-${j}`
+            row.appendChild(cell);
+        }
+        board.appendChild(row);
     }
-    board.appendChild(row);
 }
+
+buildBoard();
+
 
 // Make a keyboard on screen
 const keys = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'], ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], ['enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'back']]
 const keyboard = document.querySelector('.keyboard')
 
-
-
-for (let i = 0; i < 3; i++) {
-    const keyboardRow = document.createElement('div');
-    keyboardRow.className = "keyboardRow";
-
-    for (let j = 0; j < keys[i].length; j++){
-        const keyButton = document.createElement('button')
-        keyButton.className = "keyButton";
-        keyButton.innerHTML = keys[i][j];
-        keyboardRow.appendChild(keyButton)
+function buildKeyboard() {
+    for (let i = 0; i < 3; i++) {
+        const keyboardRow = document.createElement('div');
+        keyboardRow.className = "keyboardRow";
+    
+        for (let j = 0; j < keys[i].length; j++){
+            const keyButton = document.createElement('button')
+            keyButton.className = "keyButton";
+            keyButton.innerHTML = keys[i][j];
+            keyboardRow.appendChild(keyButton)
+        }
+    
+        keyboard.appendChild(keyboardRow);
     }
-
-    keyboard.appendChild(keyboardRow);
 }
+
+buildKeyboard();
 
 // grab all buttons in a keyboard
 const keyboardKeys = document.querySelectorAll('.keyButton');
@@ -82,10 +103,13 @@ const keyboardKeys = document.querySelectorAll('.keyButton');
 keyboardKeys.forEach((key) => {
     let newKey = key.innerText.toLowerCase();
     key.addEventListener('click', () => {
-    let currentCell = findCurrentCell(selectedCell, selectedRow);
-    if (selectedCell <= 4 && (keys[0].includes(newKey) || keys[1].includes(newKey) || keys[2].includes(key)) && newKey != "enter" && key.innerText != "back") {
+        const won = checkWin();
+    if (!won && numberOfGuesses <= 4) {
+        let currentCell = findCurrentCell(selectedCell, selectedRow);
+    if (selectedCell <= 4 && (keys[0].includes(newKey) || keys[1].includes(newKey) || keys[2].includes(newKey)) && newKey != "enter" && newKey != "back") {
         count = 0;
         currentCell.innerText = newKey;
+        console.log(selectedCell)
         if (selectedCell < 4) {
             selectedCell++;
         };
@@ -93,16 +117,16 @@ keyboardKeys.forEach((key) => {
 
     if (newKey === 'back') {
         currentCell.innerText = '';
-        if (count < 5) {    
+        if (count < 5) {
             count = count + 1;
         }
-        if (count > 1) {
+        if (count >= 1) {
             if (selectedCell > 0) {
                 selectedCell--;
                 currentCell = findCurrentCell(selectedCell, selectedRow);
                 currentCell.innerText = '';
-            }   
-        }
+            } 
+        } 
     }
 
 
@@ -115,6 +139,7 @@ keyboardKeys.forEach((key) => {
             let message = validateWord(userWord);
             if (message === 'valid') {
                 checkWord();
+                animateCells();
                 updateCurrentRow();
             } else {
                 alert('Word not in dictionary')
@@ -123,9 +148,10 @@ keyboardKeys.forEach((key) => {
         else {
             alert('Not enough words')
         }
-
         userWord = [];
     }
+    }
+    
     })
 })
 
@@ -138,43 +164,47 @@ function findCurrentCell(selectedCell, selectedRow) {
 
 function findCurrentRow(selectedRow) {
     let currentRow = document.getElementById(`${selectedRow}`);
-    console.log(currentRow)
     let children = currentRow.children;
     return children
 }
 
+function animateCells() {
+    const elements = findCurrentRow(selectedRow);
+    for (const element of elements) {
+      element.classList.toggle("transformed-state");
+    }
+  }
 
 
 // allow user to input the char
 window.addEventListener('keydown', (e) => {
+    const won = checkWin();
+    if (!won && numberOfGuesses <= 4) {
     const key = e.key.toLowerCase()
-    console.log("selected-cell", selectedCell)
-    console.log("selected-row", selectedRow)
     let currentCell = findCurrentCell(selectedCell, selectedRow);
     if (selectedCell <= 4 && (keys[0].includes(key) || keys[1].includes(key) || keys[2].includes(key)) && e.key != "Enter" && e.key != "Backspace") {
         count = 0;
         currentCell.innerText = key;
         if (selectedCell < 4) {
             selectedCell++;
+            currentCell = findCurrentCell(selectedCell, selectedRow)
+            console.log(selectedCell)
         };
     }
 
     if (e.key === 'Backspace') {
         currentCell.innerText = '';
-        if (count < 5) {    
+        if (count < 5) {
             count = count + 1;
         }
-        if (count > 1) {
+        if (count >= 1) {
             if (selectedCell > 0) {
                 selectedCell--;
                 currentCell = findCurrentCell(selectedCell, selectedRow);
                 currentCell.innerText = '';
-            }   
-        }
+            } 
+        } 
     }
-
-    console.log("count1", count)
-
     // check the word and go to the next if the word is inside the list of words
     if (e.key === 'Enter') {
         let userArr = getUserWord();
@@ -184,6 +214,7 @@ window.addEventListener('keydown', (e) => {
             let message = validateWord(userWord);
             if (message === 'valid') {
                 checkWord();
+                animateCells();
                 updateCurrentRow();
             } else {
                 alert('Word not in dictionary')
@@ -195,12 +226,18 @@ window.addEventListener('keydown', (e) => {
 
         userWord = [];
     }
+    }
 })
 
 function updateCurrentRow() {
     selectedCell = 0;
     selectedRow++;
     numberOfGuesses++;
+
+    const lose = checkLose()
+    if (lose) {
+        alert('You lost sry');
+    }
 }
 
 
@@ -233,22 +270,25 @@ function checkWord() {
                     children[i].style.backgroundColor = '#27C43F';
                 }   
             }
+        } else {
+            console.log('yoo')
+            children[i].style.backgroundColor = '#444'
         }
     }
 
     // In this loop I check words that have more duplicates then the correct answer and if they overlapping char are in the same position
-    
+
     for  (let i = 0; i < children.length; i++) {
         if (correctArr.includes(userArr[i]) && correctDuplicates[children[i].innerText] < userDuplicates[children[i].innerText]) {
             if (userArr[i] === correctArr[i]) {
                 // turn background to green
                 children[i].style.backgroundColor = '#27C43F';
-                console.log(children[i].style.backgroundColor === 'rgb(39, 196, 63)');
                 duplicateCounter++;
             }
         }
     }
 
+    // In this loop I check words that have more duplicates, and the overlapping characters are not in the same position. I also check if the duplicate counter that I created is not greater than the duplicates in correct word
     for  (let i = 0; i < children.length; i++) {
         if (correctArr.includes(userArr[i]) && correctDuplicates[children[i].innerText] < userDuplicates[children[i].innerText]) {
             if (userArr[i] !== correctArr[i] && duplicateCounter < correctDuplicates[children[i].innerText]) {
@@ -258,14 +298,16 @@ function checkWord() {
         }
     }
 
-    
-
-
+    // Check if user won the game
     if (userArr.join('').toLowerCase() === correctWord) {
         alert("You won!")
+        won = true;
     }
 }
 
+function checkWin() {
+    return won;
+}
 
 
 function getUserWord() {
@@ -281,5 +323,27 @@ function getUserWord() {
     return userArr;
 }
 
+function checkLose() {
+    const win = checkWin();
+    console.log(win);
+    if (numberOfGuesses >= 5 && !win) { 
+        console.log(lose)
+        return lose = true;
+    } 
+}
 
+checkLose();
 
+function resetGame() {
+    // So when I reset the game I want to draw new random word, and I want to clear all cells
+    console.log('hi')
+    buildBoard();
+    numberOfGuesses = 0;
+    selectedCell = 0;
+    selectedRow = 0;
+    getRandomWord();
+}
+
+let button = document.querySelector('.reset');
+
+button.addEventListener('click', resetGame)
