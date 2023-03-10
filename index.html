@@ -16,7 +16,6 @@
 
         <div class="keyboard">
         </div>
-        <button class="reset">Reset Game</button>
     </div>
 </body>
 </html>
@@ -91,7 +90,7 @@
         align-items: center;
         justify-content: center;
         font-weight: 600;
-        font-size: 32px;
+        font-size: 30px;
         transition: cubic-bezier(0.215, 0.610, 0.355, 1);
         transition-duration: 500ms;
         transition-property: all;
@@ -108,4 +107,24 @@
         transition-timing-function: ease-in-out;
         transition-duration: 800ms;
     }
+
+    @keyframes example {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+}
+
+    .bounceKey {
+        animation-name: example;
+        animation-duration: 200ms;
+    }
+
 </style>

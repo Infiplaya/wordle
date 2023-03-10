@@ -116,6 +116,7 @@ keyboardKeys.forEach((key) => {
     if (selectedCell <= 4 && (keys[0].includes(newKey) || keys[1].includes(newKey) || keys[2].includes(newKey)) && newKey != "enter" && newKey != "back") {
         count = 0;
         currentCell.innerText = newKey;
+        animateCellText();
         if (selectedCell < 4) {
             selectedCell++;
         };
@@ -182,6 +183,10 @@ function animateCells() {
     }
   }
 
+function animateCellText() {
+    const element = findCurrentCell(selectedCell, selectedRow);
+    element.classList.toggle("bounceKey")
+}
 
 
 // allow user to input the char
@@ -193,6 +198,7 @@ window.addEventListener('keydown', (e) => {
     if (selectedCell <= 4 && (keys[0].includes(key) || keys[1].includes(key) || keys[2].includes(key)) && e.key != "Enter" && e.key != "Backspace") {
         count = 0;
         currentCell.innerText = key;
+        animateCellText();
         if (selectedCell < 4) {
             selectedCell++;
             currentCell = findCurrentCell(selectedCell, selectedRow)
@@ -209,6 +215,7 @@ window.addEventListener('keydown', (e) => {
                 selectedCell--;
                 currentCell = findCurrentCell(selectedCell, selectedRow);
                 currentCell.innerText = '';
+                animateCellText();
             } 
         } 
     }
@@ -334,34 +341,15 @@ function getUserWord() {
 
 function checkLose() {
     const win = checkWin();
-    console.log(win);
     if (numberOfGuesses >= 5 && !win) { 
-        console.log(lose)
         return lose = true;
     } 
 }
 
 checkLose();
 
-function resetGame() {
-    // So when I reset the game I want to draw new random word, and I want to clear all cells
-    console.log('hi')
-    buildBoard();
-    numberOfGuesses = 0;
-    selectedCell = 0;
-    selectedRow = 0;
-    getRandomWord();
-}
-
-let button = document.querySelector('.reset');
-
-button.addEventListener('click', resetGame)
-
-
 // for each key button on the keyboard,
 // I need to check if the key button text matches the char that is in the words that user Guessed
-
-
 function checkKeyboard() {
     let cells = [];
     let children = findCurrentRow(selectedRow);
@@ -378,17 +366,9 @@ function checkKeyboard() {
             if (cell.innerText === key.innerText) {
                 if (key.style.backgroundColor !== 'rgb(83, 141, 78)') {
                     key.style.backgroundColor = cell.style.backgroundColor;
-                    console.log(key.style.backgroundColor)
                 }
 
             }
         }
     }
 }
-
-function sleep (ms) {
-    const end = new Date().getTime() + ms;
-    while (new Date().getTime() < end) { /* do nothing */ }
-  }
-
-checkKeyboard();
