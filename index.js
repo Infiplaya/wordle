@@ -31,6 +31,12 @@ let words = ['which', 'there', 'their', 'about', 'would', 'these', 'other', 'wor
 let won = false;
 let lose = false;
 
+const YELLOW = '#BED453'
+
+const GREEN = '#538d4e'
+
+const GREY = '#444';
+
 
 let correctWord;
 
@@ -250,6 +256,7 @@ function validateWord(word) {
     return message = 'invalid';
 }
 
+
 function checkWord() {
     let userArr = getUserWord();
     let correctArr = correctWord.split('')
@@ -264,15 +271,15 @@ function checkWord() {
         if (correctArr.includes(userArr[i])) {
             if (correctDuplicates[children[i].innerText] >= userDuplicates[children[i].innerText]) {
                 // turn background to yellow
-                children[i].style.backgroundColor = '#BED453';
+                children[i].style.backgroundColor = YELLOW;
                 // check if the character in input is in correct place
                 if (userArr[i] === correctArr[i]) {
                     // turn background to green
-                    children[i].style.backgroundColor = '#27C43F';
+                    children[i].style.backgroundColor = GREEN;
                 }   
             }
         } else {
-            children[i].style.backgroundColor = '#444'
+            children[i].style.backgroundColor = GREY
         }
     }
 
@@ -282,7 +289,7 @@ function checkWord() {
         if (correctArr.includes(userArr[i]) && correctDuplicates[children[i].innerText] < userDuplicates[children[i].innerText]) {
             if (userArr[i] === correctArr[i]) {
                 // turn background to green
-                children[i].style.backgroundColor = '#27C43F';
+                children[i].style.backgroundColor = GREEN;
                 duplicateCounter++;
             }
         }
@@ -293,7 +300,7 @@ function checkWord() {
         if (correctArr.includes(userArr[i]) && correctDuplicates[children[i].innerText] < userDuplicates[children[i].innerText]) {
             if (userArr[i] !== correctArr[i] && duplicateCounter < correctDuplicates[children[i].innerText]) {
                 duplicateCounter++;
-                children[i].style.backgroundColor = '#BED453';
+                children[i].style.backgroundColor = YELLOW;
             } 
         }
     }
@@ -367,7 +374,11 @@ function checkKeyboard() {
     for (let key of keyboardKeys) {
         for (let cell of cells ) {
             if (cell.innerText === key.innerText) {
-                key.style.backgroundColor = cell.style.backgroundColor;
+                if (key.style.backgroundColor !== 'rgb(83, 141, 78)') {
+                    key.style.backgroundColor = cell.style.backgroundColor;
+                    console.log(key.style.backgroundColor)
+                }
+                
             }
         }
     }
