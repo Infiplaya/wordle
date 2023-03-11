@@ -145,12 +145,12 @@ keyboardKeys.forEach((key) => {
             let userWord = userArr.join('').toLowerCase();
             let message = validateWord(userWord);
             if (message === 'valid') {
-                checkWord();
                 animateCells();
+                checkWord();
                 updateCurrentRow();
                 checkKeyboard();
             } else {
-                alert('Word not in dictionary')
+                shakeCells();
             }
         }
         else {
@@ -180,6 +180,9 @@ function animateCells() {
     const elements = findCurrentRow(selectedRow);
     for (const element of elements) {
       element.classList.toggle("transformed-state");
+      setTimeout(() => {
+        element.classList.toggle("transformed-state");
+      }, 500)
     }
   }
 
