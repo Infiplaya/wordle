@@ -108,7 +108,7 @@
         transition-duration: 800ms;
     }
 
-    @keyframes example {
+    @keyframes bounce {
         0% {
             transform: scale(1);
         }
@@ -120,11 +120,33 @@
         100% {
             transform: scale(1);
         }
-}
+    }
 
     .bounceKey {
-        animation-name: example;
+        animation-name: bounce;
         animation-duration: 200ms;
+    }
+
+    @keyframes shake {
+        0% {
+            transform: scale(1);
+            transform: translateX(10px);
+            transform: rotate(0.05turn);
+        }
+
+        50% {
+            transform: scale(1.1);
+            transform: rotate(-0.05turn);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .shakeKey {
+        animation-name: shake;
+        animation-duration: 500ms;
     }
 
 </style>

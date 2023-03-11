@@ -183,6 +183,17 @@ function animateCells() {
     }
   }
 
+  function shakeCells() {
+    const elements = findCurrentRow(selectedRow);
+    for (const element of elements) {
+        element.classList.remove("bounceKey")
+      element.classList.add("shakeKey");
+      setTimeout(() => {
+        element.classList.remove("shakeKey");
+      }, 500)
+    }
+  }
+
 function animateCellText() {
     const element = findCurrentCell(selectedCell, selectedRow);
     element.classList.toggle("bounceKey")
@@ -232,7 +243,7 @@ window.addEventListener('keydown', (e) => {
                 updateCurrentRow();
                 checkKeyboard();
             } else {
-                alert('Word not in dictionary')
+                shakeCells();
             }
         }
         else {
