@@ -146,7 +146,6 @@ keyboardKeys.forEach((key) => {
             let message = validateWord(userWord);
             if (message === 'valid') {
                 animateCells();
-                checkWord();
                 updateCurrentRow();
                 checkKeyboard();
             } else {
@@ -241,10 +240,13 @@ window.addEventListener('keydown', (e) => {
             let userWord = userArr.join('').toLowerCase();
             let message = validateWord(userWord);
             if (message === 'valid') {
-                checkWord();
                 animateCells();
-                updateCurrentRow();
-                checkKeyboard();
+                setTimeout(() => {
+                    checkWord();
+                    updateCurrentRow();
+                    checkKeyboard();   
+                }, 500)
+                
             } else {
                 shakeCells();
             }
